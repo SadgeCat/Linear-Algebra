@@ -21,3 +21,8 @@ python -m venv venv
 ```
 pip install -r requirements.txt
 ```
+<br><br>
+Run the Semester Reflection (computes # of walks from node i to j in k steps)!!!
+```
+python MatricesWithPython/Semester_Reflection_Project.py
+```

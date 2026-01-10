@@ -1,5 +1,4 @@
 # Linear Algebra Stuff
-# Description
 Programming activties/projects in Linear Algebra class.
 # How To Run
 1. Clone the repository

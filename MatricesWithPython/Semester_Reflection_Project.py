@@ -96,7 +96,7 @@ def matrix_product(A,B):
     return P
 
 # counts the number of paths from node i to j in k steps
-# done by multiplying the adj matrix by itself, time complexity: n^3logn
+# done by multiplying the adj matrix by itself, time complexity: n^3logk
 def walk_count(k):
     A = copy.deepcopy(current_matrix)
     calc = [copy.deepcopy(A)]

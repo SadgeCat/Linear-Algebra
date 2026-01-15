@@ -224,7 +224,7 @@ def matrix_to_string(m):
 
 print("****************************************************************")
 print("This is a program that can return an adjacency matrix by calling the function 'walk_count(k)' where the entry (i,j) represents the number of walks of k steps (length k) from vertex i to j.")
-print("You can also use 'cost_track(k)' to get a matrix that represents the minimum cost from 2 nodes of at least length k, and 'cost_track(2)' to get that for exactly length k")
+print("You can also use 'cost_track(k)' to get a matrix that represents the minimum cost from 2 nodes of at most length k, and 'cost_track(2)' to get that for exactly length k")
 print("Currently, there a built-in matrices you can play around with. See it using 'print_matrix()', 'print_cost_matrix()', and 'print_cost_matrix2()'")
 print("You can also create a new matrix using 'create_matrix()'")
 print("Create a visualization of your graph using 'build_graph()'")

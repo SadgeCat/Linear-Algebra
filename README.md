@@ -22,7 +22,7 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 <br><br>
-Run the Semester Reflection (computes # of walks from node i to j in k steps)!!!
+Run the Semester Reflection (computes # of walks from node i to j in k steps, and minimum cost in at most/exactly k steps)!!!
 ```
 python MatricesWithPython/Semester_Reflection_Project.py
 ```

@@ -27,13 +27,16 @@ C2 = [
     [-1,9,-1,-1,1],
     [2,-1,-1,1,-1],
 ]
+# the current matrices that the user is working with, set to the examples initially
 current_matrix = M
 current_cost_matrix = C
 current_cost_matrix2 = C2
+# saves the matrices that the user created in a list so user can go back to previously created matrices if they want
 created_matrices = [M]
 created_cost_matrices = [C]
 created_cost_matrices2 = [C2]
 
+# standard get, set, and print functions of the matrices
 def get_matrix(idx):
     return created_matrices[idx]
 
@@ -69,7 +72,7 @@ def convert_to_adj(m, size):
     matrix = [[0] * size for _ in range(size)]
     cost_matrix = [[-1] * size for _ in range(size)]
     cost_matrix2 = [[-1] * size for _ in range(size)]
-    for row in m:
+    for row in m:                           # each row is just a starting node and an ending node to represent an edge
         matrix[row[0]-1][row[1]-1] = 1
         matrix[row[1]-1][row[0]-1] = 1
         cost_matrix[row[0]-1][row[1]-1] = row[2]

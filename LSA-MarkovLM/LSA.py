@@ -3,13 +3,13 @@ import re
 
 import os
 
-files = ["txt_files/f1.txt", "txt_files/f2.txt", "txt_files.f3.txt"]
+# files = ["txt_files/f1.txt", "txt_files/f2.txt", "txt_files.f3.txt"]
 
 svd = []
-word_set = {}
+word_set = set()
 text_list = {}
 
-p = "/txt_files"
+p = "./txt_files"
 
 for e in os.scandir(p):
     if e.is_file():
@@ -27,21 +27,45 @@ for e in os.scandir(p):
                 words_dict[word] += 1
         text_list[e.path] = words_dict
 
-for i in range(len(files)):
-    words = []
-    with open(files[i], "r") as file:
-        content = file.read()
-        # words = re.split(r"[,\s;:]+", content.lower())
-        words = re.findall(r"\b\w+\b", content.lower())
-    words_dict = {}
-    for word in words:
-        word_set.add(word)
-        if word not in words_dict:
-            words_dict[word] = 1
-        else:
-            words_dict[word] += 1
-    text_list[files[i]] = words_dict
+# for i in range(len(files)):
+#     words = []
+#     with open(files[i], "r") as file:
+#         content = file.read()
+#         # words = re.split(r"[,\s;:]+", content.lower())
+#         words = re.findall(r"\b\w+\b", content.lower())
+#     words_dict = {}
+#     for word in words:
+#         word_set.add(word)
+#         if word not in words_dict:
+#             words_dict[word] = 1
+#         else:
+#             words_dict[word] += 1
+#     text_list[files[i]] = words_dict
+
+# for text in text_list:
+#     col = {}
+#     for word in word_set:
+#         cnt = 0
+#         if word in text_list[text]:
+#             cnt = text_list[text][word]
+#         col[word] = cnt
+#     svd.append(col)
 
 for text in text_list:
-    col = {}
+    col = []
     for word in word_set:
+        cnt = 0
+        if word in text_list[text]:
+            cnt = text_list[text][word]
+        col.append(cnt)
+    svd.append(col)
+
+u, s, vh = np.linalg.svd(svd, full_matrices=True,compute_uv=True)
+
+
+
+print(u)
+print("/n*********************************/n")
+print(s)
+print("/n*********************************/n")
+print(vh)

@@ -6,6 +6,7 @@ import re, os
 svd = []
 word_set = set()
 text_list = {}
+total_word_cnt = []
 
 # p = "./txt_files"
 p = "./generated_files"
@@ -17,6 +18,7 @@ for e in os.scandir(p):
             content = file.read()
             # words = re.split(r"[,\s;:]+", content.lower())
             words = re.findall(r"\b\w+\b", content.lower())
+        total_word_cnt.append(len(words))
         words_dict = {}
         for word in words:
             word_set.add(word)
@@ -59,13 +61,33 @@ for text in text_list:
         col.append(cnt)
     svd.append(col)
 
+def TF_IDF():
+    col = []
+    for word in word_set:
+        cnt = 0
+        if word in text_list[text]:
+            cnt = text_list[text][word]
+            
+    
+
 # print(svd)
 
 u, s, vh = np.linalg.svd(svd, full_matrices=True,compute_uv=True)
 
+n = len(s)
+matrix_approx_2 = np.zeros((len(text_list),len(word_set))) 
 
-print(u)
-print("/n*********************************/n")
-print(s)
-print("/n*********************************/n")
-print(vh)
+k = 5
+
+for i in range(k):
+  matrix_approx_2 += s[i]*np.outer(u[:,i],vh[i])
+
+print(matrix_approx_2)
+
+
+
+# print(u)
+# print("/n*********************************/n")
+# print(s)
+# print("/n*********************************/n")
+# print(vh)

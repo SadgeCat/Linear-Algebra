@@ -3,7 +3,7 @@ import re, random, os
 
 # test = "txt_files/test.txt"
 # f = "txt_files/shakespeare.txt"
-# f2 = "txt_files/shakespeare_full.txt"
+f2 = "txt_files/shakespeare_full.txt"
 
 p = "./generated_files"
 
@@ -12,6 +12,11 @@ words = []
 
 def clear_bigram():
     bigrams.clear()
+
+def build():
+    for e in os.scandir(p):
+        if e.is_file():
+            build_bigram(e)
 
 def build_bigram(filename):
     with open(filename, "r") as file:

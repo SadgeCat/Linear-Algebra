@@ -1,7 +1,5 @@
 import numpy as np
-import re
-
-import os
+import re, os
 
 # files = ["txt_files/f1.txt", "txt_files/f2.txt", "txt_files.f3.txt"]
 
@@ -9,7 +7,8 @@ svd = []
 word_set = set()
 text_list = {}
 
-p = "./txt_files"
+# p = "./txt_files"
+p = "./generated_files"
 
 for e in os.scandir(p):
     if e.is_file():
@@ -60,8 +59,9 @@ for text in text_list:
         col.append(cnt)
     svd.append(col)
 
-u, s, vh = np.linalg.svd(svd, full_matrices=True,compute_uv=True)
+# print(svd)
 
+u, s, vh = np.linalg.svd(svd, full_matrices=True,compute_uv=True)
 
 
 print(u)

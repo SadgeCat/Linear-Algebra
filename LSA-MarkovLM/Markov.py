@@ -1,10 +1,13 @@
 import numpy as np
-import re, random
+import re, random, os
+
+# test = "txt_files/test.txt"
+# f = "txt_files/shakespeare.txt"
+# f2 = "txt_files/shakespeare_full.txt"
+
+p = "./generated_files"
 
 bigrams = {}
-test = "txt_files/test.txt"
-f = "txt_files/shakespeare.txt"
-f2 = "txt_files/shakespeare_full.txt"
 words = []
 
 def clear_bigram():

@@ -5,28 +5,62 @@ import re, os
 
 svd = []
 word_set = set()
+word_list = []
 text_list = {}
-total_word_cnt = []
+word_context = {}
 
 # p = "./txt_files"
 p = "./generated_files"
 
-for e in os.scandir(p):
-    if e.is_file():
-        words = []
-        with open(e.path, "r") as file:
-            content = file.read()
-            # words = re.split(r"[,\s;:]+", content.lower())
-            words = re.findall(r"\b\w+\b", content.lower())
-        total_word_cnt.append(len(words))
-        words_dict = {}
-        for word in words:
-            word_set.add(word)
-            if word not in words_dict:
-                words_dict[word] = 1
-            else:
-                words_dict[word] += 1
-        text_list[e.path] = words_dict
+def get_word_list(path):
+    for e in os.scandir(path):
+        if e.is_file():
+            words = []
+            with open(e.path, "r") as file:
+                content = file.read()
+                words = re.findall(r"\b\w+\b", content.lower())
+            word_list.extend(words)
+
+def get_word_set(path):
+    get_word_list(path)
+    word_set = set(word_list)
+
+def doc_based():
+    for e in os.scandir(p):
+        if e.is_file():
+            words = []
+            with open(e.path, "r") as file:
+                content = file.read()
+                # words = re.split(r"[,\s;:]+", content.lower())
+                words = re.findall(r"\b\w+\b", content.lower())
+            words_dict = {}
+            for word in words:
+                if word not in words_dict:
+                    words_dict[word] = 1
+                else:
+                    words_dict[word] += 1
+            text_list[e.path] = words_dict
+
+    for text in text_list:
+        col = []
+        for word in word_set:
+            cnt = 0
+            if word in text_list[text]:
+                cnt = text_list[text][word]
+            col.append(cnt)
+        svd.append(col)
+
+def context_based(path):
+    get_word_set()
+    for word in word_set:
+        word_dict = {}
+        for e in os.scandir(path):
+            if e.is_file():
+                words = []
+                with open(e.path, "r") as file:
+                    content = file.read()
+                    words = re.findall(r"\b\w+\b", content.lower())
+
 
 # for i in range(len(files)):
 #     words = []
@@ -50,24 +84,7 @@ for e in os.scandir(p):
 #         if word in text_list[text]:
 #             cnt = text_list[text][word]
 #         col[word] = cnt
-#     svd.append(col)
-
-for text in text_list:
-    col = []
-    for word in word_set:
-        cnt = 0
-        if word in text_list[text]:
-            cnt = text_list[text][word]
-        col.append(cnt)
-    svd.append(col)
-
-def TF_IDF():
-    col = []
-    for word in word_set:
-        cnt = 0
-        if word in text_list[text]:
-            cnt = text_list[text][word]
-            
+#     svd.append(col)            
     
 
 # print(svd)

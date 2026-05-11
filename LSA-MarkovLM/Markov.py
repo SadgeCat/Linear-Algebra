@@ -13,8 +13,8 @@ words = []
 def clear_bigram():
     bigrams.clear()
 
-def build():
-    for e in os.scandir(p):
+def build(path):
+    for e in os.scandir(path):
         if e.is_file():
             build_bigram(e)
 

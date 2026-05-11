@@ -2,7 +2,7 @@ import numpy as np
 import re, random, os
 
 # test = "txt_files/test.txt"
-# f = "txt_files/shakespeare.txt"
+f = "txt_files/shakespeare.txt"
 f2 = "txt_files/shakespeare_full.txt"
 
 p = "./generated_files"

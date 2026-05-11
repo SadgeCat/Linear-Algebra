@@ -13,6 +13,9 @@ window = 2
 k = 5
 matrix_approx = []
 
+f = "txt_files/shakespeare.txt"
+f2 = "txt_files/shakespeare_full.txt"
+
 # p = "./txt_files"
 p = "./generated_files"
 

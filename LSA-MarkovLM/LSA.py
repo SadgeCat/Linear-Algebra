@@ -15,6 +15,7 @@ matrix_approx = []
 
 f = "txt_files/shakespeare.txt"
 f2 = "txt_files/shakespeare_full.txt"
+f3 = "txt_files/small_shakespeare.txt"
 
 # p = "./txt_files"
 p = "./generated_files"
@@ -38,7 +39,7 @@ def get_word_list2(file):
 def get_word_set(path):
     global word_set, word_indices, word_context
     # get_word_list(path)
-    get_word_list2(f)
+    get_word_list2(f3)
     word_set = set(word_list)
     word_indices = {
         word:i for i, word in enumerate(word_set)
@@ -58,15 +59,16 @@ def context_based(path):
                 word_context[target_idx][context_idx] += 1
     print(word_context)
 
-# context_based(p)
+context_based(p)
 
 def apply_svd():
     global matrix_approx
     u, s, vh = np.linalg.svd(word_context, full_matrices=True,compute_uv=True)
     matrix_approx = u[:, :k] * s[:k]
-    print(matrix_approx[word_indices["liberty"]])
+    # print(matrix_approx[word_indices["liberty"]])
+    print(matrix_approx[word_indices["flower"]])
 
-# apply_svd()
+apply_svd()
 
 def cos_sim(v1, v2):
     return np.dot(v1,v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
@@ -74,6 +76,10 @@ def cos_sim(v1, v2):
 # print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["liberty"]]))
 # print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["hell"]]))
 # print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["pleasure"]]))
+
+print(cos_sim(matrix_approx[word_indices["flower"]], matrix_approx[word_indices["rose"]]))
+print(cos_sim(matrix_approx[word_indices["flower"]], matrix_approx[word_indices["hell"]]))
+print(cos_sim(matrix_approx[word_indices["flower"]], matrix_approx[word_indices["heart"]]))
 
 
 def doc_based():

@@ -7,18 +7,23 @@ f2 = "txt_files/shakespeare_full.txt"
 
 p = "./generated_files"
 
-bigrams = {}
-words = []
+# bigrams = {}
+# words = []
 
-def clear_bigram():
+def clear_bigram(bigrams):
     bigrams.clear()
+
+def print_bigram(bigrams):
+    # for key in bigrams:
+    #     print(key)
+    print(bigrams.keys())
 
 def build(path):
     for e in os.scandir(path):
         if e.is_file():
             build_bigram(e)
 
-def build_bigram(filename):
+def build_bigram(filename, bigrams):
     with open(filename, "r") as file:
         content = file.read()
         # words = re.split(r"[,\s;:]+", content.lower())
@@ -42,7 +47,7 @@ def build_bigram(filename):
     print(bigrams)
 
 
-def gen_text(start, length):
+def gen_text(start, length, bigrams):
     if isinstance(start, str):
         start = start.lower()
     if start not in bigrams:

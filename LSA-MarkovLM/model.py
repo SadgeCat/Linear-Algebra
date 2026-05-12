@@ -1,12 +1,13 @@
 import numpy as np
 import os, random
 
-from Markov import clear_bigram, build, build_bigram
+from Markov import clear_bigram, build, build_bigram, print_bigram
 from LSA import get_word_list, get_word_list2, get_word_set, context_based, apply_svd, cos_sim
 
 s = "txt_files/test.txt"
 f = "txt_files/shakespeare.txt"
 f2 = "txt_files/shakespeare_full.txt"
+f3 = "txt_files/small_shakespeare.txt"
 
 p = "./generated_files"
 
@@ -27,7 +28,7 @@ k = 5
 
 def run(file):
     global bigrams, words, svd, word_set, word_indices, word_list, text_list, word_context, matrix_approx
-    build_bigram(file)
+    build_bigram(file, bigrams=bigrams)
     context_based(file)
     apply_svd()
 
@@ -41,10 +42,12 @@ def apply_LSA(cur, next_words, probs):
     return probs
 
 def make_text(start, length):
+    print_bigram(bigrams=bigrams)
+    print(bigrams.keys())
     if isinstance(start, str):
         start = start.lower()
     if start not in bigrams:
-        return "Starting word is not in the text."
+        return start + "Starting word is not in the text."
     if start is None:
         start = random.choice(list(bigrams.keys()))
     res = [start]
@@ -58,5 +61,5 @@ def make_text(start, length):
     text = " ".join(res)
     return text
 
-run(s)
-print(make_text("I", 100))
+run(f3)
+print(make_text("owl", 100))

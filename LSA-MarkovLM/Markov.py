@@ -59,5 +59,5 @@ def gen_text(start, length):
     text = " ".join(res)
     return text
 
-while True:
-    print(eval(input()))
+# while True:
+#     print(eval(input()))

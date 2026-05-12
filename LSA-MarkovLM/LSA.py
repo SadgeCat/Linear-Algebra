@@ -29,14 +29,52 @@ def get_word_list(path):
                 words = re.findall(r"\b\w+\b", content.lower())
             word_list.extend(words)
 
+def get_word_list2(file):
+    global word_list
+    with open(file, "r") as f:
+        content = f.read()
+        word_list = re.findall(r"\b\w+\b", content.lower())
+
 def get_word_set(path):
     global word_set, word_indices, word_context
-    get_word_list(path)
+    # get_word_list(path)
+    get_word_list2(f)
     word_set = set(word_list)
     word_indices = {
         word:i for i, word in enumerate(word_set)
     }
     word_context = np.zeros((len(word_set), len(word_set)))
+
+def context_based(path):
+    global word_context
+    get_word_set(path)
+    for i, word in enumerate(word_list):
+        target_idx = word_indices[word]
+        left = max(0, i-window)
+        right = min(i+window+1, len(word_list))
+        for k in range(left, right):
+            if(k != i):
+                context_idx = word_indices[word_list[k]]
+                word_context[target_idx][context_idx] += 1
+    print(word_context)
+
+# context_based(p)
+
+def apply_svd():
+    global matrix_approx
+    u, s, vh = np.linalg.svd(word_context, full_matrices=True,compute_uv=True)
+    matrix_approx = u[:, :k] * s[:k]
+    print(matrix_approx[word_indices["liberty"]])
+
+# apply_svd()
+
+def cos_sim(v1, v2):
+    return np.dot(v1,v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+
+# print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["liberty"]]))
+# print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["hell"]]))
+# print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["pleasure"]]))
+
 
 def doc_based():
     for e in os.scandir(p):
@@ -62,36 +100,6 @@ def doc_based():
                 cnt = text_list[text][word]
             col.append(cnt)
         svd.append(col)
-
-def context_based(path):
-    global word_context
-    get_word_set(path)
-    for i, word in enumerate(word_list):
-        target_idx = word_indices[word]
-        left = max(0, i-window)
-        right = min(i+window+1, len(word_list))
-        for k in range(left, right):
-            if(k != i):
-                context_idx = word_indices[word_list[k]]
-                word_context[target_idx][context_idx] += 1
-    print(word_context)
-
-context_based(p)
-
-def apply_svd():
-    global matrix_approx
-    u, s, vh = np.linalg.svd(word_context, full_matrices=True,compute_uv=True)
-    matrix_approx = u[:, :k] * s[:k]
-    print(matrix_approx[word_indices["liberty"]])
-
-apply_svd()
-
-def cos_sim(v1, v2):
-    return np.dot(v1,v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-
-print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["liberty"]]))
-print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["hell"]]))
-print(cos_sim(matrix_approx[word_indices["crime"]], matrix_approx[word_indices["pleasure"]]))
 
 # for i in range(len(files)):
 #     words = []

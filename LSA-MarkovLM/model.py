@@ -1,9 +1,10 @@
 import numpy as np
-import os
+import os, random
 
-from Markov import *
-from LSA import *
+from Markov import clear_bigram, build, build_bigram
+from LSA import get_word_list, get_word_list2, get_word_set, context_based, apply_svd, cos_sim
 
+s = "txt_files/test.txt"
 f = "txt_files/shakespeare.txt"
 f2 = "txt_files/shakespeare_full.txt"
 
@@ -25,6 +26,7 @@ window = 2
 k = 5
 
 def run(file):
+    global bigrams, words, svd, word_set, word_indices, word_list, text_list, word_context, matrix_approx
     build_bigram(file)
     context_based(file)
     apply_svd()
@@ -34,6 +36,8 @@ def apply_LSA(cur, next_words, probs):
         v1 = matrix_approx[word_indices[cur]]
         v2 = matrix_approx[word_indices[word]]
         probs[i] *= cos_sim(v1,v2)
+        probs = np.array(probs)
+        probs = probs / probs.sum()
     return probs
 
 def make_text(start, length):
@@ -54,5 +58,5 @@ def make_text(start, length):
     text = " ".join(res)
     return text
 
-run()
-make_text("I", 100)
+run(s)
+print(make_text("I", 100))

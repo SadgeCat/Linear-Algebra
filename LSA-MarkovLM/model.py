@@ -42,8 +42,9 @@ def apply_LSA(cur, next_words, probs):
     return probs
 
 def make_text(start, length):
-    print_bigram(bigrams=bigrams)
-    print(bigrams.keys())
+    # print_bigram(bigrams=bigrams)
+    # print(bigrams.keys())
+    print(word_indices)
     if isinstance(start, str):
         start = start.lower()
     if start not in bigrams:
@@ -62,4 +63,4 @@ def make_text(start, length):
     return text
 
 run(f3)
-print(make_text("owl", 100))
+print(make_text("why", 100))

@@ -44,7 +44,7 @@ def build_bigram(filename, bigrams):
         for subkey in bigrams[key]:
             bigrams[key][subkey] *= (1.0 / total)
     
-    print(bigrams)
+    # print(bigrams)
 
 
 def gen_text(start, length, bigrams):

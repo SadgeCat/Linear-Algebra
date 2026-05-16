@@ -20,7 +20,8 @@ f3 = "txt_files/small_shakespeare.txt"
 # p = "./txt_files"
 p = "./generated_files"
 
-def get_word_list(path, word_list):
+def get_word_list(path):
+    word_list = []
     for e in os.scandir(path):
         if e.is_file():
             words = []
@@ -28,6 +29,7 @@ def get_word_list(path, word_list):
                 content = file.read()
                 words = re.findall(r"\b\w+\b", content.lower())
             word_list.extend(words)
+    return word_list
 
 def get_word_list2(file):
     with open(file, "r") as f:
@@ -47,10 +49,10 @@ def get_word_set(path):
     # word_indices = {
     #     word:i for i, word in enumerate(word_set)
     # }
-    return word_indices, word_set
+    return word_list, word_indices, word_set
 
-def context_based(path, word_list, window):
-    word_indices, word_set = get_word_set(path)
+def context_based(path, window):
+    word_list, word_indices, word_set = get_word_set(path)
     word_context = np.zeros((len(word_set), len(word_set)))
     for i, word in enumerate(word_list):
         target_idx = word_indices[word]
@@ -63,16 +65,16 @@ def context_based(path, word_list, window):
     # print(word_context)
     return word_context
 
-context_based(p)
+# context_based(p)
 
-def apply_svd(matrix_approx, word_context, K):
+def apply_svd(K, word_context):
     u, s, vh = np.linalg.svd(word_context, full_matrices=True,compute_uv=True)
     matrix_approx = u[:, :K] * s[:K]
     # print(matrix_approx[word_indices["liberty"]])
     # print(matrix_approx[word_indices["flower"]])
     return matrix_approx
 
-apply_svd()
+# apply_svd()
 
 def cos_sim(v1, v2):
     return np.dot(v1,v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))

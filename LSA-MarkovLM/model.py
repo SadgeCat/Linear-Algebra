@@ -16,7 +16,6 @@ bigrams = {}
 words = []
 
 # LSA
-svd = []
 word_set = set()
 word_indices = {}
 word_list = []
@@ -24,22 +23,24 @@ text_list = {}
 word_context = []
 matrix_approx = []
 window = 2
-k = 5
+K = 5
 
 def run(file):
-    global bigrams, words, svd, word_set, word_indices, word_list, text_list, word_context, matrix_approx
+    global bigrams, words, word_set, word_indices, word_list, text_list, word_context, matrix_approx
     build_bigram(file, bigrams=bigrams)
-    context_based(file)
-    apply_svd()
+    word_list, word_indices, word_set = get_word_set(file)
+    word_context = context_based(file, window)
+    matrix_approx = apply_svd(K, word_context=word_context)
 
 def apply_LSA(cur, next_words, probs):
+    newprobs = [0] * len(next_words)
     for i, word in enumerate(next_words):
         v1 = matrix_approx[word_indices[cur]]
         v2 = matrix_approx[word_indices[word]]
-        probs[i] *= cos_sim(v1,v2)
-        probs = np.array(probs)
-        probs = probs / probs.sum()
-    return probs
+        newprobs[i] = probs[i] * cos_sim(v1,v2)
+        newprobs = np.array(newprobs)
+        newprobs = newprobs / newprobs.sum()
+    return newprobs
 
 def make_text(start, length):
     # print_bigram(bigrams=bigrams)

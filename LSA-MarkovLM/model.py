@@ -3,6 +3,7 @@ import os, random
 
 from Markov import clear_bigram, build, build_bigram, print_bigram
 from LSA import get_word_list, get_word_list2, get_word_set, context_based, apply_svd, cos_sim
+from PPMI import get
 
 s = "txt_files/test.txt"
 f = "txt_files/shakespeare.txt"
@@ -14,6 +15,7 @@ p = "./generated_files"
 
 # markov
 bigrams = {}
+raw_bigrams = {}
 words = []
 
 # LSA
@@ -23,24 +25,32 @@ word_list = []
 text_list = {}
 word_context = []
 matrix_approx = []
-window = 2
-K = 5
+window = 5
+K = 50
+LSA_const = 0.2
+
+## PPMI
+PPMI_scores = []
 
 def run(file):
-    global bigrams, words, word_set, word_indices, word_list, text_list, word_context, matrix_approx
-    bigrams = build_bigram(file)
+    global bigrams, raw_bigrams, words, word_set, word_indices, word_list, text_list, word_context, matrix_approx, PPMI_scores
+    bigrams, raw_bigrams = build_bigram(file)
     word_list, word_indices, word_set = get_word_set(file)
     word_context = context_based(file, window)
     matrix_approx = apply_svd(K, word_context=word_context)
+    PPMI_scores = get(file, raw_bigrams, word_list, word_indices, word_set)
 
 def apply_LSA(cur, next_words, probs):
     newprobs = [0] * len(next_words)
     for i, word in enumerate(next_words):
-        v1 = matrix_approx[word_indices[cur]]
-        v2 = matrix_approx[word_indices[word]]
-        newprobs[i] = max(0, probs[i] * cos_sim(v1,v2))
-        newprobs = np.array(newprobs)
-        newprobs = newprobs / newprobs.sum()
+        idx1 = word_indices[cur]
+        idx2 = word_indices[word]
+        v1 = matrix_approx[idx1]
+        v2 = matrix_approx[idx2]
+        newprobs[i] = max(0, probs[i] * (1 + LSA_const * cos_sim(v1,v2)))     # applying cos sim
+        newprobs[i] *= PPMI_scores[idx1, idx2]           # applying PPMI
+    newprobs = np.array(newprobs)
+    newprobs = newprobs / newprobs.sum()
     return newprobs
 
 def make_text(start, length):
@@ -58,11 +68,12 @@ def make_text(start, length):
     for i in range(length):
         next_words = list(bigrams[cur].keys())      # keys are words that follows the current word
         probs = list(bigrams[cur].values())         # values are probabilities
-        # probs = apply_LSA(cur, next_words, probs)   # scale by cos sim from svd
+        probs = apply_LSA(cur, next_words, probs)   # scale by cos sim from svd
         current = np.random.choice(next_words, p=probs)
         res.append(current)
+        cur = current
     text = " ".join(res)
     return text
 
-run(f2)
+run(darwin)
 print(make_text("why", 100))

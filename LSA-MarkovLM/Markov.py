@@ -1,5 +1,5 @@
 import numpy as np
-import re, random, os
+import re, random, os, copy
 
 # test = "txt_files/test.txt"
 f = "txt_files/shakespeare.txt"
@@ -24,7 +24,7 @@ def build(path):
             build_bigram(e)
 
 def build_bigram(filename):
-    bigrams = {}
+    raw_bigrams = {}
     with open(filename, "r") as file:
         content = file.read()
         # also splits by dashes and apostrophies
@@ -34,13 +34,14 @@ def build_bigram(filename):
         # words = re.findall(r"\b\w+\b", content.lower())   # creates whole words, no punctations
 
     for i in range(len(words)-1):
-        if words[i] not in bigrams:
-            bigrams[words[i]] = {}
-        if words[i+1] not in bigrams[words[i]]:
-            bigrams[words[i]][words[i+1]] = 1
+        if words[i] not in raw_bigrams:
+            raw_bigrams[words[i]] = {}
+        if words[i+1] not in raw_bigrams[words[i]]:
+            raw_bigrams[words[i]][words[i+1]] = 1
         else:
-            bigrams[words[i]][words[i+1]] += 1
+            raw_bigrams[words[i]][words[i+1]] += 1
 
+    bigrams = copy.deepcopy(raw_bigrams)
     for key in bigrams:
         total = 0
         for subkey in bigrams[key]:
@@ -49,7 +50,7 @@ def build_bigram(filename):
             bigrams[key][subkey] *= (1.0 / total)
     
     # print(bigrams)
-    return bigrams
+    return bigrams, raw_bigrams
 
 def gen_text(start, length, bigrams):
     if isinstance(start, str):

@@ -14,11 +14,12 @@ darwin = "txt_files/darwin.txt"
 
 p = "./generated_files"
 
-def get(f):
-    bigrams = build_bigram(f)
-    word_list, word_indices, word_set = get_word_set(f)
+def get(f, bigrams, word_list, word_indices, word_set):
     word_counts = Counter(word_list)
-    total = len(word_list)
+    total = 0
+    for w1 in bigrams:
+        for w2 in bigrams[w1]:
+            total += bigrams[w1][w2]
     unique = len(word_set)
     PPMI = lil_matrix((unique, unique), dtype=np.float32)
     for word1 in bigrams:
@@ -26,7 +27,7 @@ def get(f):
         for word2 in bigrams[word1]:
             idx2 = word_indices[word2]
             freq = bigrams[word1][word2]
-            value = np.log(1.0 * freq * (total-1) / word_counts[word1] * word_counts[word2])
+            value = np.log(1.0 * freq * (total-1) / (word_counts[word1] * word_counts[word2]))
             print(f"{word1} {word2}: {value}")
             PPMI[idx1, idx2] = max(0, value)
     return PPMI

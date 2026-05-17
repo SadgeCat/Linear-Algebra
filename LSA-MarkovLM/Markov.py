@@ -23,11 +23,15 @@ def build(path):
         if e.is_file():
             build_bigram(e)
 
-def build_bigram(filename, bigrams):
+def build_bigram(filename):
+    bigrams = {}
     with open(filename, "r") as file:
         content = file.read()
-        # words = re.split(r"[,\s;:]+", content.lower())
-        words = re.findall(r"\b\w+\b", content.lower())
+        # also splits by dashes and apostrophies
+        words = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,]", content)
+        # words = re.findall(r"\w+|[,.:?!]", content)         # by word and punctations in bracket
+        # words = re.split(r"[,\s;:]+", content.lower())      # separate by , whitespace ; and :
+        # words = re.findall(r"\b\w+\b", content.lower())   # creates whole words, no punctations
 
     for i in range(len(words)-1):
         if words[i] not in bigrams:
@@ -45,7 +49,7 @@ def build_bigram(filename, bigrams):
             bigrams[key][subkey] *= (1.0 / total)
     
     # print(bigrams)
-
+    return bigrams
 
 def gen_text(start, length, bigrams):
     if isinstance(start, str):

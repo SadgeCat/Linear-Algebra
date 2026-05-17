@@ -8,6 +8,7 @@ s = "txt_files/test.txt"
 f = "txt_files/shakespeare.txt"
 f2 = "txt_files/shakespeare_full.txt"
 f3 = "txt_files/small_shakespeare.txt"
+darwin = "txt_files/darwin.txt"
 
 p = "./generated_files"
 
@@ -27,7 +28,7 @@ K = 5
 
 def run(file):
     global bigrams, words, word_set, word_indices, word_list, text_list, word_context, matrix_approx
-    build_bigram(file, bigrams=bigrams)
+    bigrams = build_bigram(file)
     word_list, word_indices, word_set = get_word_set(file)
     word_context = context_based(file, window)
     matrix_approx = apply_svd(K, word_context=word_context)
@@ -37,7 +38,7 @@ def apply_LSA(cur, next_words, probs):
     for i, word in enumerate(next_words):
         v1 = matrix_approx[word_indices[cur]]
         v2 = matrix_approx[word_indices[word]]
-        newprobs[i] = probs[i] * cos_sim(v1,v2)
+        newprobs[i] = max(0, probs[i] * cos_sim(v1,v2))
         newprobs = np.array(newprobs)
         newprobs = newprobs / newprobs.sum()
     return newprobs
@@ -45,7 +46,7 @@ def apply_LSA(cur, next_words, probs):
 def make_text(start, length):
     # print_bigram(bigrams=bigrams)
     # print(bigrams.keys())
-    print(word_indices)
+    # print(word_indices)
     if isinstance(start, str):
         start = start.lower()
     if start not in bigrams:
@@ -57,11 +58,11 @@ def make_text(start, length):
     for i in range(length):
         next_words = list(bigrams[cur].keys())      # keys are words that follows the current word
         probs = list(bigrams[cur].values())         # values are probabilities
-        probs = apply_LSA(cur, next_words, probs)   # scale by cos sim from svd
+        # probs = apply_LSA(cur, next_words, probs)   # scale by cos sim from svd
         current = np.random.choice(next_words, p=probs)
         res.append(current)
     text = " ".join(res)
     return text
 
-run(f3)
+run(f2)
 print(make_text("why", 100))

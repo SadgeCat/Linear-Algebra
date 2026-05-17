@@ -1,5 +1,7 @@
 import numpy as np
 import re, os
+from scipy.sparse import lil_matrix
+from scipy.sparse.linalg import svds
 
 # files = ["txt_files/f1.txt", "txt_files/f2.txt", "txt_files.f3.txt"]
 
@@ -27,14 +29,18 @@ def get_word_list(path):
             words = []
             with open(e.path, "r") as file:
                 content = file.read()
-                words = re.findall(r"\b\w+\b", content.lower())
+                words = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,:?!]", content)
+                # words = re.split(r"[,\s;:]+", content.lower())
+                # words = re.findall(r"\b\w+\b", content.lower())
             word_list.extend(words)
     return word_list
 
 def get_word_list2(file):
     with open(file, "r") as f:
         content = f.read()
-        word_list = re.findall(r"\b\w+\b", content.lower())
+        word_list = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,:?!]", content)
+        # word_list = re.split(r"[,\s;:]+", content.lower())
+        # word_list = re.findall(r"\b\w+\b", content.lower())
     return word_list
 
 def get_word_set(path):
@@ -53,7 +59,8 @@ def get_word_set(path):
 
 def context_based(path, window):
     word_list, word_indices, word_set = get_word_set(path)
-    word_context = np.zeros((len(word_set), len(word_set)))
+    # use a sparse matrix because most of the entries are zeros to reduce time complexity
+    word_context = lil_matrix((len(word_set), len(word_set)), dtype=np.float32)
     for i, word in enumerate(word_list):
         target_idx = word_indices[word]
         left = max(0, i-window)
@@ -61,15 +68,24 @@ def context_based(path, window):
         for k in range(left, right):
             if(k != i):
                 context_idx = word_indices[word_list[k]]
-                word_context[target_idx][context_idx] += 1
+                word_context[target_idx, context_idx] += 1
     # print(word_context)
-    return word_context
+    # compressed sparse row matrix format (contains entry value, row and col position in 3 separate lists)
+    # to be used for trucated svd
+    return word_context.tocsr()
 
 # context_based(p)
 
 def apply_svd(K, word_context):
-    u, s, vh = np.linalg.svd(word_context, full_matrices=True,compute_uv=True)
-    matrix_approx = u[:, :K] * s[:K]
+    # time complexity is O(n^2) instead of O(n^3)
+    # which is important cuz the dimensions of our matrix = the number of unique words which is a lot
+    u, s, vt = svds(word_context, k=K)
+    idx = np.argsort(-s)
+    s = s[idx]
+    u = u[:, idx]
+    matrix_approx = u * s
+    # u, s, vh = np.linalg.svd(word_context, full_matrices=True,compute_uv=True)
+    # matrix_approx = u[:, :K] * s[:K]
     # print(matrix_approx[word_indices["liberty"]])
     # print(matrix_approx[word_indices["flower"]])
     return matrix_approx

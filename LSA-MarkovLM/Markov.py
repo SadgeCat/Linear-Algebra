@@ -28,7 +28,7 @@ def build_bigram(filename):
     with open(filename, "r") as file:
         content = file.read()
         # also splits by dashes and apostrophies
-        words = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,]", content)
+        words = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,]", content.lower())
         # words = re.findall(r"\w+|[,.:?!]", content)         # by word and punctations in bracket
         # words = re.split(r"[,\s;:]+", content.lower())      # separate by , whitespace ; and :
         # words = re.findall(r"\b\w+\b", content.lower())   # creates whole words, no punctations

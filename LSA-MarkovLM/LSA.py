@@ -29,7 +29,7 @@ def get_word_list(path):
             words = []
             with open(e.path, "r") as file:
                 content = file.read()
-                words = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,:?!]", content)
+                words = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,:?!]", content.lower())
                 # words = re.split(r"[,\s;:]+", content.lower())
                 # words = re.findall(r"\b\w+\b", content.lower())
             word_list.extend(words)
@@ -38,7 +38,7 @@ def get_word_list(path):
 def get_word_list2(file):
     with open(file, "r") as f:
         content = f.read()
-        word_list = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,:?!]", content)
+        word_list = re.findall(r"[A-Za-z0-9]+(?:[-'][A-Za-z0-9]+)*|[.,:?!]", content.lower())
         # word_list = re.split(r"[,\s;:]+", content.lower())
         # word_list = re.findall(r"\b\w+\b", content.lower())
     return word_list

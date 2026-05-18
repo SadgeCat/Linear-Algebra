@@ -1,5 +1,5 @@
 import numpy as np
-import os, random
+import os, random, re
 
 from Markov import clear_bigram, build, build_bigram, print_bigram
 from LSA import get_word_list, get_word_list2, get_word_set, context_based, apply_svd, cos_sim
@@ -11,7 +11,7 @@ f2 = "txt_files/shakespeare_full.txt"
 f3 = "txt_files/small_shakespeare.txt"
 darwin = "txt_files/darwin.txt"
 
-p = "./generated_files"
+p = "./text_made"
 
 # markov
 bigrams = {}
@@ -64,6 +64,7 @@ def make_text(start, length):
     if start is None:
         start = random.choice(list(bigrams.keys()))
     res = [start]
+    text = start
     cur = start
     for i in range(length):
         next_words = list(bigrams[cur].keys())      # keys are words that follows the current word
@@ -72,8 +73,18 @@ def make_text(start, length):
         current = np.random.choice(next_words, p=probs)
         res.append(current)
         cur = current
-    text = " ".join(res)
+
+        if re.search(r"[.,:?!]", current) == None:
+            text += " " + current
+        else:
+            text += current
+
+    # text = " ".join(res)
+    text.strip()
     return text
 
 run(darwin)
-print(make_text("why", 100))
+print(make_text("I", 100))
+
+with open("demofile.txt", "w") as f:
+  f.write("Woops! I have deleted the content!")

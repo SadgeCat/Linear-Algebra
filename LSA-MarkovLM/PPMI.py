@@ -14,6 +14,7 @@ darwin = "txt_files/darwin.txt"
 
 p = "./generated_files"
 
+# PPMI using bigrams (only adjacent words)
 def get(f, bigrams, word_list, word_indices, word_set):
     word_counts = Counter(word_list)
     total = 0

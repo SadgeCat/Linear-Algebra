@@ -84,7 +84,9 @@ def make_text(start, length):
     return text
 
 run(darwin)
-print(make_text("I", 100))
 
-with open("demofile.txt", "w") as f:
-  f.write("Woops! I have deleted the content!")
+my_text = make_text("I", 100)
+print(my_text)
+
+with open("text_made/demofile.txt", "w") as f:
+  f.write(my_text)
